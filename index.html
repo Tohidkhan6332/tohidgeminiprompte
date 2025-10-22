@@ -6,6 +6,7 @@
     <title>Tohid Gemini Prompte - Share Photos & Prompts</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* All the existing CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -790,18 +791,20 @@
             <div class="upload-area">
                 <h3><i class="fas fa-keyboard"></i> Add Your Prompt</h3>
                 <textarea class="prompt-input" id="prompt-text" placeholder="Describe your prompt for Gemini AI..."></textarea>
-                <div class="category-filter">
-                    <div class="category-btn active" data-category="all">All</div>
-                    <div class="category-btn" data-category="children">Children's</div>
-                    <div class="category-btn" data-category="couple">Couple</div>
-                    <div class="category-btn" data-category="family">Family</div>
-                    <div class="category-btn" data-category="friends">Friends</div>
-                    <div class="category-btn" data-category="boy">Boy</div>
-                    <div class="category-btn" data-category="man">Man</div>
-                    <div class="category-btn" data-category="old-man">Old Man</div>
-                    <div class="category-btn" data-category="girl">Girl</div>
-                    <div class="category-btn" data-category="woman">Woman</div>
-                    <div class="category-btn" data-category="old-woman">Old Woman</div>
+                <div class="form-group">
+                    <label for="category-select">Select Category</label>
+                    <select id="category-select" class="form-group input" style="width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                        <option value="children">Children's</option>
+                        <option value="couple">Couple</option>
+                        <option value="family">Family</option>
+                        <option value="friends">Friends</option>
+                        <option value="boy">Boy</option>
+                        <option value="man">Man</option>
+                        <option value="old-man">Old Man</option>
+                        <option value="girl">Girl</option>
+                        <option value="woman">Woman</option>
+                        <option value="old-woman">Old Woman</option>
+                    </select>
                 </div>
                 <button class="upload-btn" id="submit-btn"><i class="fas fa-paper-plane"></i> Share Creation</button>
             </div>
@@ -816,6 +819,12 @@
                     <div class="category-btn" data-category="couple">Couple</div>
                     <div class="category-btn" data-category="family">Family</div>
                     <div class="category-btn" data-category="friends">Friends</div>
+                    <div class="category-btn" data-category="boy">Boy</div>
+                    <div class="category-btn" data-category="man">Man</div>
+                    <div class="category-btn" data-category="old-man">Old Man</div>
+                    <div class="category-btn" data-category="girl">Girl</div>
+                    <div class="category-btn" data-category="woman">Woman</div>
+                    <div class="category-btn" data-category="old-woman">Old Woman</div>
                 </div>
             </div>
             
@@ -921,63 +930,12 @@
     </div>
 
     <script>
-        // Sample gallery data
-        const galleryData = [
-            {
-                id: 1,
-                image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
-                prompt: "A professional headshot of a woman with soft lighting and a warm smile",
-                category: "woman",
-                likes: 24,
-                shares: 5
-            },
-            {
-                id: 2,
-                image: "https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
-                prompt: "A happy family enjoying a picnic in the park on a sunny day",
-                category: "family",
-                likes: 42,
-                shares: 12
-            },
-            {
-                id: 3,
-                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80",
-                prompt: "Portrait of a young woman with natural makeup and soft focus",
-                category: "woman",
-                likes: 31,
-                shares: 8
-            },
-            {
-                id: 4,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-                prompt: "A thoughtful young man in a casual setting with warm tones",
-                category: "man",
-                likes: 18,
-                shares: 3
-            },
-            {
-                id: 5,
-                image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-                prompt: "A cheerful woman with curly hair laughing naturally",
-                category: "woman",
-                likes: 56,
-                shares: 15
-            },
-            {
-                id: 6,
-                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-                prompt: "A stylish portrait of a woman with dramatic lighting",
-                category: "woman",
-                likes: 39,
-                shares: 9
-            }
-        ];
-
         // DOM elements
         const photoUpload = document.getElementById('photo-upload');
         const photoInput = document.getElementById('photo-input');
         const uploadedPhoto = document.getElementById('uploaded-photo');
         const promptText = document.getElementById('prompt-text');
+        const categorySelect = document.getElementById('category-select');
         const submitBtn = document.getElementById('submit-btn');
         const galleryGrid = document.getElementById('gallery-grid');
         const categoryBtns = document.querySelectorAll('.category-btn');
@@ -1022,51 +980,120 @@
         // Initialize gallery
         function initializeGallery() {
             galleryGrid.innerHTML = '';
-            galleryData.forEach(item => {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item';
-                galleryItem.setAttribute('data-category', item.category);
-                
-                galleryItem.innerHTML = `
-                    <img src="${item.image}" alt="Gallery Image" class="gallery-image">
-                    <div class="gallery-content">
-                        <span class="gallery-category">${item.category}</span>
-                        <p class="gallery-prompt">${item.prompt}
-                            <button class="copy-prompt" data-prompt="${item.prompt}">
-                                <i class="fas fa-copy"></i> Copy
-                            </button>
-                        </p>
-                        <div class="gallery-actions">
-                            <button class="like-btn"><i class="far fa-heart"></i> ${item.likes}</button>
-                            <button class="share-btn"><i class="far fa-share-square"></i> ${item.shares}</button>
-                        </div>
-                    </div>
-                `;
-                
-                galleryGrid.appendChild(galleryItem);
-            });
             
-            // Add event listeners to like and share buttons
-            document.querySelectorAll('.like-btn').forEach(btn => {
+            // Get user submissions from localStorage
+            const userSubmissions = JSON.parse(localStorage.getItem('userSubmissions')) || [];
+            
+            // Combine sample data with user submissions
+            const allGalleryData = [
+                {
+                    id: 1,
+                    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
+                    prompt: "A professional headshot of a woman with soft lighting and a warm smile",
+                    category: "woman",
+                    likes: 24,
+                    shares: 5
+                },
+                {
+                    id: 2,
+                    image: "https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
+                    prompt: "A happy family enjoying a picnic in the park on a sunny day",
+                    category: "family",
+                    likes: 42,
+                    shares: 12
+                },
+                {
+                    id: 3,
+                    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80",
+                    prompt: "Portrait of a young woman with natural makeup and soft focus",
+                    category: "woman",
+                    likes: 31,
+                    shares: 8
+                },
+                {
+                    id: 4,
+                    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                    prompt: "A thoughtful young man in a casual setting with warm tones",
+                    category: "man",
+                    likes: 18,
+                    shares: 3
+                },
+                {
+                    id: 5,
+                    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                    prompt: "A professional woman with a confident expression and modern style",
+                    category: "woman",
+                    likes: 29,
+                    shares: 7
+                },
+                {
+                    id: 6,
+                    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                    prompt: "A stylish portrait of a woman with artistic lighting",
+                    category: "woman",
+                    likes: 37,
+                    shares: 9
+                }
+            ].concat(userSubmissions);
+            
+            // Display all items initially
+            displayGalleryItems(allGalleryData);
+            
+            // Add event listeners to category buttons
+            categoryBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (!currentUser) {
-                        showLoginModal();
-                        return;
-                    }
+                    // Update active button
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    const likesCount = this.querySelector('i').nextSibling;
-                    let count = parseInt(likesCount.textContent);
-                    count++;
-                    likesCount.textContent = ` ${count}`;
+                    const category = this.getAttribute('data-category');
                     
-                    if (this.querySelector('i').classList.contains('far')) {
-                        this.querySelector('i').classList.replace('far', 'fas');
-                        this.querySelector('i').style.color = 'var(--accent)';
+                    if (category === 'all') {
+                        displayGalleryItems(allGalleryData);
+                    } else {
+                        const filteredItems = allGalleryData.filter(item => item.category === category);
+                        displayGalleryItems(filteredItems);
                     }
                 });
             });
+        }
+
+        // Display gallery items
+        function displayGalleryItems(items) {
+            galleryGrid.innerHTML = '';
             
-            // Add event listeners to copy prompt buttons
+            if (items.length === 0) {
+                galleryGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">No items found in this category. Be the first to upload!</p>';
+                return;
+            }
+            
+            items.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="Gallery Image" class="gallery-image">
+                    <div class="gallery-content">
+                        <span class="gallery-category">${formatCategory(item.category)}</span>
+                        <p class="gallery-prompt">
+                            ${item.prompt}
+                            <button class="copy-prompt" data-prompt="${item.prompt}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </p>
+                        <div class="gallery-actions">
+                            <button class="like-btn" data-id="${item.id}">
+                                <i class="fas fa-heart"></i> <span>${item.likes || 0}</span>
+                            </button>
+                            <button class="share-btn">
+                                <i class="fas fa-share-alt"></i> <span>${item.shares || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            // Add event listeners to copy buttons
             document.querySelectorAll('.copy-prompt').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const prompt = this.getAttribute('data-prompt');
@@ -1074,20 +1101,34 @@
                     showToast('Prompt copied to clipboard!');
                 });
             });
+            
+            // Add event listeners to like buttons
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    // In a real app, you would update the like count in the database
+                    // For this demo, we'll just update the UI
+                    const likeCount = this.querySelector('span');
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                    this.style.color = 'var(--accent)';
+                });
+            });
+        }
+
+        // Format category for display
+        function formatCategory(category) {
+            return category.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
         }
 
         // Photo upload functionality
         photoUpload.addEventListener('click', function() {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
             photoInput.click();
         });
 
         photoInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
+            if (e.target.files && e.target.files[0]) {
                 const reader = new FileReader();
                 
                 reader.onload = function(event) {
@@ -1095,115 +1136,95 @@
                     uploadedPhoto.style.display = 'block';
                     photoUpload.querySelector('i').style.display = 'none';
                     photoUpload.querySelector('p').style.display = 'none';
-                }
+                };
                 
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(e.target.files[0]);
             }
         });
 
-        // Allow drag and drop
-        photoUpload.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--primary)';
-            this.style.backgroundColor = 'rgba(106, 17, 203, 0.1)';
-        });
-
-        photoUpload.addEventListener('dragleave', function() {
-            this.style.borderColor = 'var(--gray)';
-            this.style.backgroundColor = 'var(--light)';
-        });
-
-        photoUpload.addEventListener('drop', function(e) {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
-            
-            e.preventDefault();
-            this.style.borderColor = 'var(--gray)';
-            this.style.backgroundColor = 'var(--light)';
-            
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                photoInput.files = e.dataTransfer.files;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedPhoto.src = event.target.result;
-                    uploadedPhoto.style.display = 'block';
-                    photoUpload.querySelector('i').style.display = 'none';
-                    photoUpload.querySelector('p').style.display = 'none';
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Submit functionality
+        // Submit button functionality
         submitBtn.addEventListener('click', function() {
+            // Check if user is logged in
             if (!currentUser) {
-                showLoginModal();
+                showToast('Please log in to share your creation');
+                loginModal.style.display = 'flex';
                 return;
             }
             
-            if (!uploadedPhoto.src || !promptText.value.trim()) {
-                alert('Please upload a photo and add a prompt before sharing.');
+            // Check if a photo is uploaded
+            if (!uploadedPhoto.src || uploadedPhoto.src === window.location.href) {
+                showToast('Please upload a photo first');
                 return;
             }
             
-            // In a real application, you would send this data to a server
-            // For this demo, we'll just show a success message
-            alert('Your creation has been shared successfully!');
+            // Check if prompt is provided
+            if (!promptText.value.trim()) {
+                showToast('Please enter a prompt');
+                promptText.focus();
+                return;
+            }
+            
+            // Get category
+            const category = categorySelect.value;
+            
+            // Create new submission
+            const newSubmission = {
+                id: Date.now(), // Simple ID generation
+                image: uploadedPhoto.src,
+                prompt: promptText.value,
+                category: category,
+                likes: 0,
+                shares: 0,
+                userId: currentUser.id,
+                userName: currentUser.name,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            const userSubmissions = JSON.parse(localStorage.getItem('userSubmissions')) || [];
+            userSubmissions.push(newSubmission);
+            localStorage.setItem('userSubmissions', JSON.stringify(userSubmissions));
             
             // Reset form
+            uploadedPhoto.src = '';
             uploadedPhoto.style.display = 'none';
             photoUpload.querySelector('i').style.display = 'block';
             photoUpload.querySelector('p').style.display = 'block';
             promptText.value = '';
-            photoInput.value = '';
             
-            // Reset category buttons
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector('.category-btn[data-category="all"]').classList.add('active');
+            // Show success message
+            showToast('Your creation has been shared successfully!');
+            
+            // Refresh gallery
+            initializeGallery();
         });
 
-        // Category filtering
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                
-                // Update active state
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Filter gallery items
-                const galleryItems = document.querySelectorAll('.gallery-item');
-                galleryItems.forEach(item => {
-                    if (category === 'all' || item.getAttribute('data-category') === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
-
-        // Login/Register Modal Functionality
-        function showLoginModal() {
+        // Login/Register functionality
+        loginBtn.addEventListener('click', function() {
             loginModal.style.display = 'flex';
-        }
+        });
 
-        function hideLoginModal() {
+        registerBtn.addEventListener('click', function() {
+            loginModal.style.display = 'flex';
+            // Switch to register tab
+            modalTabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelector('.modal-tab[data-tab="register"]').classList.add('active');
+            
+            loginForm.classList.remove('active');
+            registerForm.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', function() {
             loginModal.style.display = 'none';
-        }
+        });
 
-        loginBtn.addEventListener('click', showLoginModal);
-        registerBtn.addEventListener('click', showLoginModal);
+        window.addEventListener('click', function(e) {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
 
-        closeModal.addEventListener('click', hideLoginModal);
-
-        // Switch between login and register tabs
+        // Modal tab switching
         modalTabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 const tabName = this.getAttribute('data-tab');
@@ -1230,19 +1251,25 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
-            // In a real application, you would validate credentials with a server
-            // For this demo, we'll use a simple check
+            // Simple validation
+            if (!email || !password) {
+                showToast('Please fill in all fields');
+                return;
+            }
+            
+            // Check if user exists
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.email === email && u.password === password);
             
             if (user) {
+                // Login successful
                 currentUser = user;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 updateUserInterface();
-                hideLoginModal();
-                showToast('Login successful!');
+                loginModal.style.display = 'none';
+                showToast(`Welcome back, ${user.name}!`);
             } else {
-                alert('Invalid email or password. Please try again.');
+                showToast('Invalid email or password');
             }
         });
 
@@ -1255,9 +1282,14 @@
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm').value;
             
-            // Validate passwords match
+            // Simple validation
+            if (!name || !email || !password || !confirmPassword) {
+                showToast('Please fill in all fields');
+                return;
+            }
+            
             if (password !== confirmPassword) {
-                alert('Passwords do not match. Please try again.');
+                showToast('Passwords do not match');
                 return;
             }
             
@@ -1266,7 +1298,7 @@
             const existingUser = users.find(u => u.email === email);
             
             if (existingUser) {
-                alert('An account with this email already exists. Please login instead.');
+                showToast('User with this email already exists');
                 return;
             }
             
@@ -1281,25 +1313,15 @@
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
             
-            // Log the user in
+            // Auto-login
             currentUser = newUser;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             updateUserInterface();
-            hideLoginModal();
-            showToast('Registration successful!');
+            loginModal.style.display = 'none';
+            showToast(`Welcome to Tohid Gemini Prompte, ${name}!`);
         });
 
-        // User profile click
-        userProfile.addEventListener('click', function() {
-            if (confirm('Do you want to logout?')) {
-                currentUser = null;
-                localStorage.removeItem('currentUser');
-                updateUserInterface();
-                showToast('Logged out successfully!');
-            }
-        });
-
-        // Copy to clipboard function
+        // Utility functions
         function copyToClipboard(text) {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -1309,7 +1331,6 @@
             document.body.removeChild(textarea);
         }
 
-        // Show toast notification
         function showToast(message) {
             toastMessage.textContent = message;
             toast.classList.add('show');
@@ -1319,16 +1340,83 @@
             }, 3000);
         }
 
-        // Scroll to upload section
         function scrollToUpload() {
-            document.getElementById('upload').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('upload').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
         }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target === loginModal) {
-                hideLoginModal();
-            }
+        // Add event listeners to category cards
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Update active category button
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                document.querySelector(`.category-btn[data-category="${category}"]`).classList.add('active');
+                
+                // Filter gallery
+                const userSubmissions = JSON.parse(localStorage.getItem('userSubmissions')) || [];
+                const sampleData = [
+                    {
+                        id: 1,
+                        image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
+                        prompt: "A professional headshot of a woman with soft lighting and a warm smile",
+                        category: "woman",
+                        likes: 24,
+                        shares: 5
+                    },
+                    {
+                        id: 2,
+                        image: "https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
+                        prompt: "A happy family enjoying a picnic in the park on a sunny day",
+                        category: "family",
+                        likes: 42,
+                        shares: 12
+                    },
+                    {
+                        id: 3,
+                        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80",
+                        prompt: "Portrait of a young woman with natural makeup and soft focus",
+                        category: "woman",
+                        likes: 31,
+                        shares: 8
+                    },
+                    {
+                        id: 4,
+                        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                        prompt: "A thoughtful young man in a casual setting with warm tones",
+                        category: "man",
+                        likes: 18,
+                        shares: 3
+                    },
+                    {
+                        id: 5,
+                        image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                        prompt: "A professional woman with a confident expression and modern style",
+                        category: "woman",
+                        likes: 29,
+                        shares: 7
+                    },
+                    {
+                        id: 6,
+                        image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                        prompt: "A stylish portrait of a woman with artistic lighting",
+                        category: "woman",
+                        likes: 37,
+                        shares: 9
+                    }
+                ];
+                
+                const allGalleryData = sampleData.concat(userSubmissions);
+                const filteredItems = allGalleryData.filter(item => item.category === category);
+                displayGalleryItems(filteredItems);
+                
+                // Scroll to gallery
+                document.getElementById('gallery').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            });
         });
     </script>
 </body>
