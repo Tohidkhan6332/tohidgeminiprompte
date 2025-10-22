@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tohid Gemini Prompte - Share Photos & Prompts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff6b6b;
+            --dark: #222;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #28a745;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .login-btn, .register-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .register-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .login-btn:hover, .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .modal-form {
+            display: none;
+        }
+        
+        .modal-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .modal-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 25px;
+        }
+        
+        /* Upload Section */
+        .upload-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .upload-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .upload-area {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-area h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .upload-box {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed var(--gray);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary);
+            background: rgba(106, 17, 203, 0.05);
+        }
+        
+        .upload-box i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .upload-box p {
+            color: var(--gray);
+            text-align: center;
+        }
+        
+        .uploaded-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        
+        .prompt-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Gallery Section */
+        .gallery {
+            margin-bottom: 40px;
+        }
+        
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .gallery-header h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            padding: 8px 15px;
+            background: var(--light);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .gallery-content {
+            padding: 20px;
+        }
+        
+        .gallery-category {
+            display: inline-block;
+            background: var(--light);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .gallery-prompt {
+            margin-bottom: 15px;
+            color: var(--dark);
+            position: relative;
+            padding-right: 40px;
+        }
+        
+        .copy-prompt {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: var(--light);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gray);
+        }
+        
+        .copy-prompt:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .gallery-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .gallery-actions button {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .gallery-actions button:hover {
+            color: var(--primary);
+        }
+        
+        /* Categories Section */
+        .categories {
+            margin-bottom: 40px;
+        }
+        
+        .categories h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-card i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        /* Developer Section */
+        .developer {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .developer h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .developer-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .developer-image {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+        
+        .developer-image img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid var(--secondary);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .developer-details {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .developer-details h4 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+        
+        .developer-details p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: var(--light);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            border-radius: 15px 15px 0 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .copyright {
+            flex: 1;
+            text-align: center;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .developer-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://github.com/Tohidkhan6332.png" alt="Tohid Gemini Prompte Logo">
+                    <h1>Tohid <span>Gemini Prompte</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#upload"><i class="fas fa-cloud-upload-alt"></i> Upload</a></li>
+                        <li><a href="#gallery"><i class="fas fa-images"></i> Gallery</a></li>
+                        <li><a href="#categories"><i class="fas fa-tags"></i> Categories</a></li>
+                        <li><a href="#developer"><i class="fas fa-info-circle"></i> About</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions" id="user-actions">
+                    <button class="login-btn" id="login-btn">Login</button>
+                    <button class="register-btn" id="register-btn">Register</button>
+                    <div class="user-profile" id="user-profile" style="display: none;">
+                        <img src="https://github.com/Tohidkhan6332.png" alt="User Avatar" class="user-avatar">
+                        <span id="username">User</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login/Register Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="modal-tabs">
+                <div class="modal-tab active" data-tab="login">Login</div>
+                <div class="modal-tab" data-tab="register">Register</div>
+            </div>
+            
+            <form class="modal-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="modal-submit">Login</button>
+            </form>
+            
+            <form class="modal-form" id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">Confirm Password</label>
+                    <input type="password" id="register-confirm" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="modal-submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="hero">
+            <h2>Share Your Gemini AI Creations</h2>
+            <p>Upload your photos and prompts to inspire the Gemini AI community. Explore amazing creations from users worldwide.</p>
+            <button class="upload-btn" onclick="scrollToUpload()"><i class="fas fa-cloud-upload-alt"></i> Start Sharing Now</button>
+        </section>
+
+        <section class="upload-container" id="upload">
+            <div class="upload-area">
+                <h3><i class="fas fa-image"></i> Upload Your Photo</h3>
+                <div class="upload-box" id="photo-upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload or drag and drop</p>
+                    <p>PNG, JPG, GIF up to 10MB</p>
+                    <img class="uploaded-image" id="uploaded-photo" src="" alt="Uploaded Image">
+                </div>
+                <input type="file" id="photo-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="upload-area">
+                <h3><i class="fas fa-keyboard"></i> Add Your Prompt</h3>
+                <textarea class="prompt-input" id="prompt-text" placeholder="Describe your prompt for Gemini AI..."></textarea>
+                <div class="category-filter">
+                    <div class="category-btn active" data-category="all">All</div>
+                    <div class="category-btn" data-category="children">Children's</div>
+                    <div class="category-btn" data-category="couple">Couple</div>
+                    <div class="category-btn" data-category="family">Family</div>
+                    <div class="category-btn" data-category="friends">Friends</div>
+                    <div class="category-btn" data-category="boy">Boy</div>
+                    <div class="category-btn" data-category="man">Man</div>
+                    <div class="category-btn" data-category="old-man">Old Man</div>
+                    <div class="category-btn" data-category="girl">Girl</div>
+                    <div class="category-btn" data-category="woman">Woman</div>
+                    <div class="category-btn" data-category="old-woman">Old Woman</div>
+                </div>
+                <button class="upload-btn" id="submit-btn"><i class="fas fa-paper-plane"></i> Share Creation</button>
+            </div>
+        </section>
+
+        <section class="gallery" id="gallery">
+            <div class="gallery-header">
+                <h3>Community Gallery</h3>
+                <div class="category-filter">
+                    <div class="category-btn active" data-category="all">All</div>
+                    <div class="category-btn" data-category="children">Children's</div>
+                    <div class="category-btn" data-category="couple">Couple</div>
+                    <div class="category-btn" data-category="family">Family</div>
+                    <div class="category-btn" data-category="friends">Friends</div>
+                </div>
+            </div>
+            
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Gallery items will be added here dynamically -->
+            </div>
+        </section>
+
+        <section class="categories" id="categories">
+            <h3>Photo Categories</h3>
+            <div class="category-grid">
+                <div class="category-card" data-category="children">
+                    <i class="fas fa-child"></i>
+                    <h4>Children's</h4>
+                </div>
+                <div class="category-card" data-category="couple">
+                    <i class="fas fa-heart"></i>
+                    <h4>Couple</h4>
+                </div>
+                <div class="category-card" data-category="family">
+                    <i class="fas fa-home"></i>
+                    <h4>Family</h4>
+                </div>
+                <div class="category-card" data-category="friends">
+                    <i class="fas fa-user-friends"></i>
+                    <h4>Friends</h4>
+                </div>
+                <div class="category-card" data-category="boy">
+                    <i class="fas fa-male"></i>
+                    <h4>Boy</h4>
+                </div>
+                <div class="category-card" data-category="man">
+                    <i class="fas fa-user"></i>
+                    <h4>Man</h4>
+                </div>
+                <div class="category-card" data-category="old-man">
+                    <i class="fas fa-user-tie"></i>
+                    <h4>Old Man</h4>
+                </div>
+                <div class="category-card" data-category="girl">
+                    <i class="fas fa-female"></i>
+                    <h4>Girl</h4>
+                </div>
+                <div class="category-card" data-category="woman">
+                    <i class="fas fa-user"></i>
+                    <h4>Woman</h4>
+                </div>
+                <div class="category-card" data-category="old-woman">
+                    <i class="fas fa-user-alt"></i>
+                    <h4>Old Woman</h4>
+                </div>
+            </div>
+        </section>
+
+        <section class="developer" id="developer">
+            <h3>About the Developer</h3>
+            <div class="developer-info">
+                <div class="developer-image">
+                    <img src="https://github.com/Tohidkhan6332.png" alt="Tohid Khan">
+                </div>
+                <div class="developer-details">
+                    <h4>Tohid Khan</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> From HARYANA, INDIA</p>
+                    <p><i class="fas fa-envelope"></i> tohidkhan9050482152@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +91 7849917350</p>
+                    <p><i class="fas fa-globe"></i> Website: Tohid Gemini Prompte</p>
+                    
+                    <div class="social-links">
+                        <a href="https://instagram.com/Tohidkhan6332" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="https://facebook.com/Tohidkhan6332" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>
+                        <a href="https://t.me/Tohidkhan6332" class="social-link"><i class="fab fa-telegram"></i> Telegram</a>
+                        <a href="https://github.com/Tohidkhan6332" class="social-link"><i class="fab fa-github"></i> GitHub</a>
+                        <a href="https://youtube.com/@Tohidkhan6332" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>
+                        <a href="https://www.linkedin.com/in/tohid-khan-3b3a69307" class="social-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                        <a href="https://whatsapp.com/channel/0029VaGyP933bbVC7G0x0i2T" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp Channel</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://github.com/Tohidkhan6332.png" alt="Tohid Gemini Prompte Logo">
+                    <h3>Tohid Gemini Prompte</h3>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2023 Tohid Gemini Prompte. All rights reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-share-alt"></i> Share</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Prompt copied to clipboard!</span>
+    </div>
+
+    <script>
+        // Sample gallery data
+        const galleryData = [
+            {
+                id: 1,
+                image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
+                prompt: "A professional headshot of a woman with soft lighting and a warm smile",
+                category: "woman",
+                likes: 24,
+                shares: 5
+            },
+            {
+                id: 2,
+                image: "https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
+                prompt: "A happy family enjoying a picnic in the park on a sunny day",
+                category: "family",
+                likes: 42,
+                shares: 12
+            },
+            {
+                id: 3,
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80",
+                prompt: "Portrait of a young woman with natural makeup and soft focus",
+                category: "woman",
+                likes: 31,
+                shares: 8
+            },
+            {
+                id: 4,
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                prompt: "A thoughtful young man in a casual setting with warm tones",
+                category: "man",
+                likes: 18,
+                shares: 3
+            },
+            {
+                id: 5,
+                image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                prompt: "A cheerful woman with curly hair laughing naturally",
+                category: "woman",
+                likes: 56,
+                shares: 15
+            },
+            {
+                id: 6,
+                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                prompt: "A stylish portrait of a woman with dramatic lighting",
+                category: "woman",
+                likes: 39,
+                shares: 9
+            }
+        ];
+
+        // DOM elements
+        const photoUpload = document.getElementById('photo-upload');
+        const photoInput = document.getElementById('photo-input');
+        const uploadedPhoto = document.getElementById('uploaded-photo');
+        const promptText = document.getElementById('prompt-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const galleryGrid = document.getElementById('gallery-grid');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const loginModal = document.getElementById('login-modal');
+        const closeModal = document.getElementById('close-modal');
+        const modalTabs = document.querySelectorAll('.modal-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const userActions = document.getElementById('user-actions');
+        const userProfile = document.getElementById('user-profile');
+        const usernameSpan = document.getElementById('username');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        // Check if user is logged in
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGallery();
+            updateUserInterface();
+        });
+
+        // Update UI based on login status
+        function updateUserInterface() {
+            if (currentUser) {
+                // User is logged in
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                userProfile.style.display = 'flex';
+                usernameSpan.textContent = currentUser.name;
+            } else {
+                // User is not logged in
+                loginBtn.style.display = 'block';
+                registerBtn.style.display = 'block';
+                userProfile.style.display = 'none';
+            }
+        }
+
+        // Initialize gallery
+        function initializeGallery() {
+            galleryGrid.innerHTML = '';
+            galleryData.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.setAttribute('data-category', item.category);
+                
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="Gallery Image" class="gallery-image">
+                    <div class="gallery-content">
+                        <span class="gallery-category">${item.category}</span>
+                        <p class="gallery-prompt">${item.prompt}
+                            <button class="copy-prompt" data-prompt="${item.prompt}">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </p>
+                        <div class="gallery-actions">
+                            <button class="like-btn"><i class="far fa-heart"></i> ${item.likes}</button>
+                            <button class="share-btn"><i class="far fa-share-square"></i> ${item.shares}</button>
+                        </div>
+                    </div>
+                `;
+                
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            // Add event listeners to like and share buttons
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!currentUser) {
+                        showLoginModal();
+                        return;
+                    }
+                    
+                    const likesCount = this.querySelector('i').nextSibling;
+                    let count = parseInt(likesCount.textContent);
+                    count++;
+                    likesCount.textContent = ` ${count}`;
+                    
+                    if (this.querySelector('i').classList.contains('far')) {
+                        this.querySelector('i').classList.replace('far', 'fas');
+                        this.querySelector('i').style.color = 'var(--accent)';
+                    }
+                });
+            });
+            
+            // Add event listeners to copy prompt buttons
+            document.querySelectorAll('.copy-prompt').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    copyToClipboard(prompt);
+                    showToast('Prompt copied to clipboard!');
+                });
+            });
+        }
+
+        // Photo upload functionality
+        photoUpload.addEventListener('click', function() {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            photoInput.click();
+        });
+
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    uploadedPhoto.src = event.target.result;
+                    uploadedPhoto.style.display = 'block';
+                    photoUpload.querySelector('i').style.display = 'none';
+                    photoUpload.querySelector('p').style.display = 'none';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Allow drag and drop
+        photoUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--primary)';
+            this.style.backgroundColor = 'rgba(106, 17, 203, 0.1)';
+        });
+
+        photoUpload.addEventListener('dragleave', function() {
+            this.style.borderColor = 'var(--gray)';
+            this.style.backgroundColor = 'var(--light)';
+        });
+
+        photoUpload.addEventListener('drop', function(e) {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            e.preventDefault();
+            this.style.borderColor = 'var(--gray)';
+            this.style.backgroundColor = 'var(--light)';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                photoInput.files = e.dataTransfer.files;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedPhoto.src = event.target.result;
+                    uploadedPhoto.style.display = 'block';
+                    photoUpload.querySelector('i').style.display = 'none';
+                    photoUpload.querySelector('p').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Submit functionality
+        submitBtn.addEventListener('click', function() {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            if (!uploadedPhoto.src || !promptText.value.trim()) {
+                alert('Please upload a photo and add a prompt before sharing.');
+                return;
+            }
+            
+            // In a real application, you would send this data to a server
+            // For this demo, we'll just show a success message
+            alert('Your creation has been shared successfully!');
+            
+            // Reset form
+            uploadedPhoto.style.display = 'none';
+            photoUpload.querySelector('i').style.display = 'block';
+            photoUpload.querySelector('p').style.display = 'block';
+            promptText.value = '';
+            photoInput.value = '';
+            
+            // Reset category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.category-btn[data-category="all"]').classList.add('active');
+        });
+
+        // Category filtering
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Update active state
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter gallery items
+                const galleryItems = document.querySelectorAll('.gallery-item');
+                galleryItems.forEach(item => {
+                    if (category === 'all' || item.getAttribute('data-category') === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Login/Register Modal Functionality
+        function showLoginModal() {
+            loginModal.style.display = 'flex';
+        }
+
+        function hideLoginModal() {
+            loginModal.style.display = 'none';
+        }
+
+        loginBtn.addEventListener('click', showLoginModal);
+        registerBtn.addEventListener('click', showLoginModal);
+
+        closeModal.addEventListener('click', hideLoginModal);
+
+        // Switch between login and register tabs
+        modalTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Update active tab
+                modalTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding form
+                if (tabName === 'login') {
+                    loginForm.classList.add('active');
+                    registerForm.classList.remove('active');
+                } else {
+                    loginForm.classList.remove('active');
+                    registerForm.classList.add('active');
+                }
+            });
+        });
+
+        // Login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // In a real application, you would validate credentials with a server
+            // For this demo, we'll use a simple check
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateUserInterface();
+                hideLoginModal();
+                showToast('Login successful!');
+            } else {
+                alert('Invalid email or password. Please try again.');
+            }
+        });
+
+        // Register form submission
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const existingUser = users.find(u => u.email === email);
+            
+            if (existingUser) {
+                alert('An account with this email already exists. Please login instead.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Log the user in
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserInterface();
+            hideLoginModal();
+            showToast('Registration successful!');
+        });
+
+        // User profile click
+        userProfile.addEventListener('click', function() {
+            if (confirm('Do you want to logout?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                updateUserInterface();
+                showToast('Logged out successfully!');
+            }
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Scroll to upload section
+        function scrollToUpload() {
+            document.getElementById('upload').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === loginModal) {
+                hideLoginModal();
+            }
+        });
+    </script>
+</body>
+</html>
