@@ -140,6 +140,27 @@
             border: 2px solid white;
         }
         
+        /* Gemini AI Button */
+        .gemini-ai-btn {
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gemini-ai-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+        
         /* Login Modal */
         .modal {
             display: none;
@@ -234,6 +255,35 @@
         .modal-submit:hover {
             transform: translateY(-3px);
             box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .otp-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .otp-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .resend-otp {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 500;
         }
         
         /* Hero Section */
@@ -424,6 +474,7 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
+            cursor: pointer;
         }
         
         .gallery-content {
@@ -605,6 +656,51 @@
             transform: translateY(-3px);
         }
         
+        /* Full Image Modal */
+        .full-image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .full-image-content {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .full-image-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .close-full-image {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-full-image:hover {
+            color: var(--accent);
+        }
+        
         /* Footer */
         footer {
             background: linear-gradient(to right, var(--primary), var(--secondary));
@@ -682,7 +778,7 @@
             padding: 15px 25px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
+            z-index: 1002;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -715,6 +811,9 @@
                     </ul>
                 </nav>
                 <div class="user-actions" id="user-actions">
+                    <button class="gemini-ai-btn" onclick="window.open('https://gemini.google.com', '_blank')">
+                        <i class="fas fa-robot"></i> Try Gemini AI
+                    </button>
                     <button class="login-btn" id="login-btn">Login</button>
                     <button class="register-btn" id="register-btn">Register</button>
                     <div class="user-profile" id="user-profile" style="display: none;">
@@ -737,12 +836,15 @@
             
             <form class="modal-form active" id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                    <label for="login-email">Email or Phone Number</label>
+                    <input type="text" id="login-email" placeholder="Enter your email or phone number" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="login-with-otp" class="resend-otp">Login with OTP instead</button>
                 </div>
                 <button type="submit" class="modal-submit">Login</button>
             </form>
@@ -757,6 +859,10 @@
                     <input type="email" id="register-email" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
+                    <label for="register-phone">Phone Number</label>
+                    <input type="tel" id="register-phone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="form-group">
                     <label for="register-password">Password</label>
                     <input type="password" id="register-password" placeholder="Create a password" required>
                 </div>
@@ -766,6 +872,45 @@
                 </div>
                 <button type="submit" class="modal-submit">Register</button>
             </form>
+            
+            <!-- OTP Login Form -->
+            <form class="modal-form" id="otp-login-form">
+                <div class="form-group">
+                    <label for="otp-email">Email or Phone Number</label>
+                    <input type="text" id="otp-email" placeholder="Enter your email or phone number" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="send-otp" class="modal-submit">Send OTP</button>
+                </div>
+                <div class="form-group" id="otp-input-group" style="display: none;">
+                    <label for="otp-code">Enter OTP</label>
+                    <div class="otp-group">
+                        <input type="text" class="otp-input" maxlength="1" required>
+                        <input type="text" class="otp-input" maxlength="1" required>
+                        <input type="text" class="otp-input" maxlength="1" required>
+                        <input type="text" class="otp-input" maxlength="1" required>
+                        <input type="text" class="otp-input" maxlength="1" required>
+                        <input type="text" class="otp-input" maxlength="1" required>
+                    </div>
+                    <div class="otp-actions">
+                        <button type="button" class="resend-otp" id="resend-otp">Resend OTP</button>
+                        <span id="otp-timer">02:00</span>
+                    </div>
+                </div>
+                <button type="submit" class="modal-submit" id="verify-otp" style="display: none;">Verify OTP</button>
+                <div class="form-group">
+                    <button type="button" id="back-to-login" class="resend-otp">Back to Password Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Full Image Modal -->
+    <div class="full-image-modal" id="full-image-modal">
+        <span class="close-full-image" id="close-full-image">&times;</span>
+        <img class="full-image-content" id="full-image" src="" alt="Full Size Image">
+        <div class="full-image-details" id="full-image-details">
+            <!-- Details will be populated by JavaScript -->
         </div>
     </div>
 
@@ -946,19 +1091,40 @@
         const modalTabs = document.querySelectorAll('.modal-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
+        const otpLoginForm = document.getElementById('otp-login-form');
+        const loginWithOtpBtn = document.getElementById('login-with-otp');
+        const backToLoginBtn = document.getElementById('back-to-login');
+        const sendOtpBtn = document.getElementById('send-otp');
+        const resendOtpBtn = document.getElementById('resend-otp');
+        const verifyOtpBtn = document.getElementById('verify-otp');
+        const otpInputGroup = document.getElementById('otp-input-group');
+        const otpTimer = document.getElementById('otp-timer');
         const userActions = document.getElementById('user-actions');
         const userProfile = document.getElementById('user-profile');
         const usernameSpan = document.getElementById('username');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
+        const fullImageModal = document.getElementById('full-image-modal');
+        const fullImage = document.getElementById('full-image');
+        const fullImageDetails = document.getElementById('full-image-details');
+        const closeFullImage = document.getElementById('close-full-image');
 
         // Check if user is logged in
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        let otpTimerInterval;
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializeGallery();
             updateUserInterface();
+            
+            // Show welcome message for new visitors
+            if (!localStorage.getItem('hasVisited')) {
+                setTimeout(() => {
+                    showToast('Welcome to Tohid Gemini Prompte! Explore amazing AI creations.');
+                }, 1000);
+                localStorage.setItem('hasVisited', 'true');
+            }
         });
 
         // Update UI based on login status
@@ -992,7 +1158,9 @@
                     prompt: "A professional headshot of a woman with soft lighting and a warm smile",
                     category: "woman",
                     likes: 24,
-                    shares: 5
+                    shares: 5,
+                    userName: "Sarah Johnson",
+                    userAvatar: "https://randomuser.me/api/portraits/women/44.jpg"
                 },
                 {
                     id: 2,
@@ -1000,7 +1168,9 @@
                     prompt: "A happy family enjoying a picnic in the park on a sunny day",
                     category: "family",
                     likes: 42,
-                    shares: 12
+                    shares: 12,
+                    userName: "Michael Brown",
+                    userAvatar: "https://randomuser.me/api/portraits/men/32.jpg"
                 },
                 {
                     id: 3,
@@ -1008,7 +1178,9 @@
                     prompt: "Portrait of a young woman with natural makeup and soft focus",
                     category: "woman",
                     likes: 31,
-                    shares: 8
+                    shares: 8,
+                    userName: "Emma Davis",
+                    userAvatar: "https://randomuser.me/api/portraits/women/68.jpg"
                 },
                 {
                     id: 4,
@@ -1016,7 +1188,9 @@
                     prompt: "A thoughtful young man in a casual setting with warm tones",
                     category: "man",
                     likes: 18,
-                    shares: 3
+                    shares: 3,
+                    userName: "Alex Wilson",
+                    userAvatar: "https://randomuser.me/api/portraits/men/22.jpg"
                 },
                 {
                     id: 5,
@@ -1024,7 +1198,9 @@
                     prompt: "A professional woman with a confident expression and modern style",
                     category: "woman",
                     likes: 29,
-                    shares: 7
+                    shares: 7,
+                    userName: "Olivia Martin",
+                    userAvatar: "https://randomuser.me/api/portraits/women/26.jpg"
                 },
                 {
                     id: 6,
@@ -1032,7 +1208,9 @@
                     prompt: "A stylish portrait of a woman with artistic lighting",
                     category: "woman",
                     likes: 37,
-                    shares: 9
+                    shares: 9,
+                    userName: "Sophia Garcia",
+                    userAvatar: "https://randomuser.me/api/portraits/women/33.jpg"
                 }
             ].concat(userSubmissions);
             
@@ -1071,7 +1249,7 @@
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
                 galleryItem.innerHTML = `
-                    <img src="${item.image}" alt="Gallery Image" class="gallery-image">
+                    <img src="${item.image}" alt="Gallery Image" class="gallery-image" data-full="${item.image}" data-details='${JSON.stringify(item)}'>
                     <div class="gallery-content">
                         <span class="gallery-category">${formatCategory(item.category)}</span>
                         <p class="gallery-prompt">
@@ -1113,6 +1291,37 @@
                     this.style.color = 'var(--accent)';
                 });
             });
+            
+            // Add event listeners to gallery images for full view
+            document.querySelectorAll('.gallery-image').forEach(img => {
+                img.addEventListener('click', function() {
+                    const fullImageUrl = this.getAttribute('data-full');
+                    const details = JSON.parse(this.getAttribute('data-details'));
+                    showFullImage(fullImageUrl, details);
+                });
+            });
+        }
+
+        // Show full image modal
+        function showFullImage(imageUrl, details) {
+            fullImage.src = imageUrl;
+            fullImageDetails.innerHTML = `
+                <h4>${details.prompt}</h4>
+                <p><strong>Category:</strong> ${formatCategory(details.category)}</p>
+                <p><strong>Uploaded by:</strong> ${details.userName || 'Anonymous'}</p>
+                <p><strong>Likes:</strong> ${details.likes || 0} | <strong>Shares:</strong> ${details.shares || 0}</p>
+                <button class="copy-prompt" data-prompt="${details.prompt}" style="margin-top: 10px;">
+                    <i class="fas fa-copy"></i> Copy Prompt
+                </button>
+            `;
+            
+            // Add event listener to the copy button in the modal
+            fullImageDetails.querySelector('.copy-prompt').addEventListener('click', function() {
+                copyToClipboard(details.prompt);
+                showToast('Prompt copied to clipboard!');
+            });
+            
+            fullImageModal.style.display = 'flex';
         }
 
         // Format category for display
@@ -1177,6 +1386,7 @@
                 shares: 0,
                 userId: currentUser.id,
                 userName: currentUser.name,
+                userAvatar: currentUser.avatar || "https://github.com/Tohidkhan6332.png",
                 timestamp: new Date().toISOString()
             };
             
@@ -1212,6 +1422,7 @@
             
             loginForm.classList.remove('active');
             registerForm.classList.add('active');
+            otpLoginForm.classList.remove('active');
         });
 
         closeModal.addEventListener('click', function() {
@@ -1237,29 +1448,117 @@
                 if (tabName === 'login') {
                     loginForm.classList.add('active');
                     registerForm.classList.remove('active');
+                    otpLoginForm.classList.remove('active');
                 } else {
                     loginForm.classList.remove('active');
                     registerForm.classList.add('active');
+                    otpLoginForm.classList.remove('active');
                 }
             });
+        });
+
+        // OTP Login functionality
+        loginWithOtpBtn.addEventListener('click', function() {
+            loginForm.classList.remove('active');
+            otpLoginForm.classList.add('active');
+        });
+
+        backToLoginBtn.addEventListener('click', function() {
+            otpLoginForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        sendOtpBtn.addEventListener('click', function() {
+            const emailOrPhone = document.getElementById('otp-email').value;
+            
+            if (!emailOrPhone) {
+                showToast('Please enter your email or phone number');
+                return;
+            }
+            
+            // Simulate sending OTP
+            showToast('OTP sent to your email/phone');
+            otpInputGroup.style.display = 'block';
+            verifyOtpBtn.style.display = 'block';
+            
+            // Start OTP timer
+            startOtpTimer();
+        });
+
+        resendOtpBtn.addEventListener('click', function() {
+            // Simulate resending OTP
+            showToast('OTP resent to your email/phone');
+            startOtpTimer();
+        });
+
+        verifyOtpBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get OTP values
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let otp = '';
+            otpInputs.forEach(input => {
+                otp += input.value;
+            });
+            
+            // Simple OTP validation (in a real app, this would be verified with a backend)
+            if (otp.length !== 6) {
+                showToast('Please enter a valid 6-digit OTP');
+                return;
+            }
+            
+            // For demo purposes, any 6-digit OTP will work
+            const emailOrPhone = document.getElementById('otp-email').value;
+            
+            // Check if user exists
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            let user = users.find(u => u.email === emailOrPhone || u.phone === emailOrPhone);
+            
+            if (!user) {
+                // Create a temporary user for demo
+                user = {
+                    id: Date.now(),
+                    name: 'Demo User',
+                    email: emailOrPhone.includes('@') ? emailOrPhone : '',
+                    phone: emailOrPhone.includes('@') ? '' : emailOrPhone
+                };
+                users.push(user);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            // Login successful
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserInterface();
+            loginModal.style.display = 'none';
+            showToast(`Welcome, ${user.name}!`);
+            
+            // Reset OTP form
+            otpInputs.forEach(input => input.value = '');
+            otpInputGroup.style.display = 'none';
+            verifyOtpBtn.style.display = 'none';
+            clearInterval(otpTimerInterval);
         });
 
         // Login form submission
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('login-email').value;
+            const emailOrPhone = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
             // Simple validation
-            if (!email || !password) {
+            if (!emailOrPhone || !password) {
                 showToast('Please fill in all fields');
                 return;
             }
             
             // Check if user exists
             const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
+            const user = users.find(u => 
+                (u.email === emailOrPhone || u.phone === emailOrPhone) && 
+                u.password === password
+            );
             
             if (user) {
                 // Login successful
@@ -1269,7 +1568,7 @@
                 loginModal.style.display = 'none';
                 showToast(`Welcome back, ${user.name}!`);
             } else {
-                showToast('Invalid email or password');
+                showToast('Invalid credentials');
             }
         });
 
@@ -1279,11 +1578,12 @@
             
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm').value;
             
             // Simple validation
-            if (!name || !email || !password || !confirmPassword) {
+            if (!name || !email || !phone || !password || !confirmPassword) {
                 showToast('Please fill in all fields');
                 return;
             }
@@ -1295,10 +1595,10 @@
             
             // Check if user already exists
             const users = JSON.parse(localStorage.getItem('users')) || [];
-            const existingUser = users.find(u => u.email === email);
+            const existingUser = users.find(u => u.email === email || u.phone === phone);
             
             if (existingUser) {
-                showToast('User with this email already exists');
+                showToast('User with this email or phone already exists');
                 return;
             }
             
@@ -1307,7 +1607,9 @@
                 id: Date.now(),
                 name: name,
                 email: email,
-                password: password
+                phone: phone,
+                password: password,
+                avatar: "https://github.com/Tohidkhan6332.png"
             };
             
             users.push(newUser);
@@ -1319,6 +1621,39 @@
             updateUserInterface();
             loginModal.style.display = 'none';
             showToast(`Welcome to Tohid Gemini Prompte, ${name}!`);
+        });
+
+        // OTP Timer function
+        function startOtpTimer() {
+            let timeLeft = 120; // 2 minutes in seconds
+            clearInterval(otpTimerInterval);
+            
+            otpTimerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                otpTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(otpTimerInterval);
+                    otpTimer.textContent = '00:00';
+                    resendOtpBtn.disabled = false;
+                } else {
+                    timeLeft--;
+                    resendOtpBtn.disabled = true;
+                }
+            }, 1000);
+        }
+
+        // Close full image modal
+        closeFullImage.addEventListener('click', function() {
+            fullImageModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target === fullImageModal) {
+                fullImageModal.style.display = 'none';
+            }
         });
 
         // Utility functions
@@ -1364,7 +1699,9 @@
                         prompt: "A professional headshot of a woman with soft lighting and a warm smile",
                         category: "woman",
                         likes: 24,
-                        shares: 5
+                        shares: 5,
+                        userName: "Sarah Johnson",
+                        userAvatar: "https://randomuser.me/api/portraits/women/44.jpg"
                     },
                     {
                         id: 2,
@@ -1372,7 +1709,9 @@
                         prompt: "A happy family enjoying a picnic in the park on a sunny day",
                         category: "family",
                         likes: 42,
-                        shares: 12
+                        shares: 12,
+                        userName: "Michael Brown",
+                        userAvatar: "https://randomuser.me/api/portraits/men/32.jpg"
                     },
                     {
                         id: 3,
@@ -1380,7 +1719,9 @@
                         prompt: "Portrait of a young woman with natural makeup and soft focus",
                         category: "woman",
                         likes: 31,
-                        shares: 8
+                        shares: 8,
+                        userName: "Emma Davis",
+                        userAvatar: "https://randomuser.me/api/portraits/women/68.jpg"
                     },
                     {
                         id: 4,
@@ -1388,7 +1729,9 @@
                         prompt: "A thoughtful young man in a casual setting with warm tones",
                         category: "man",
                         likes: 18,
-                        shares: 3
+                        shares: 3,
+                        userName: "Alex Wilson",
+                        userAvatar: "https://randomuser.me/api/portraits/men/22.jpg"
                     },
                     {
                         id: 5,
@@ -1396,7 +1739,9 @@
                         prompt: "A professional woman with a confident expression and modern style",
                         category: "woman",
                         likes: 29,
-                        shares: 7
+                        shares: 7,
+                        userName: "Olivia Martin",
+                        userAvatar: "https://randomuser.me/api/portraits/women/26.jpg"
                     },
                     {
                         id: 6,
@@ -1404,7 +1749,9 @@
                         prompt: "A stylish portrait of a woman with artistic lighting",
                         category: "woman",
                         likes: 37,
-                        shares: 9
+                        shares: 9,
+                        userName: "Sophia Garcia",
+                        userAvatar: "https://randomuser.me/api/portraits/women/33.jpg"
                     }
                 ];
                 
