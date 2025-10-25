@@ -99,6 +99,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            position: relative;
         }
         
         .login-btn, .register-btn {
@@ -131,6 +132,7 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            position: relative;
         }
         
         .user-avatar {
@@ -138,6 +140,52 @@
             height: 40px;
             border-radius: 50%;
             border: 2px solid white;
+        }
+        
+        /* User Dropdown Menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 1000;
+            margin-top: 10px;
+            display: none;
+            overflow: hidden;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: var(--light);
+        }
+        
+        .user-dropdown-item.logout {
+            color: var(--accent);
+        }
+        
+        .user-dropdown-item.logout:hover {
+            background: rgba(255, 107, 107, 0.1);
         }
         
         /* Gemini AI Button */
@@ -817,8 +865,29 @@
                     <button class="login-btn" id="login-btn">Login</button>
                     <button class="register-btn" id="register-btn">Register</button>
                     <div class="user-profile" id="user-profile" style="display: none;">
-                        <img src="https://github.com/Tohidkhan6332.png" alt="User Avatar" class="user-avatar">
+                        <img src="https://github.com/Tohidkhan6332.png" alt="User Avatar" class="user-avatar" id="user-avatar">
                         <span id="username">User</span>
+                        <i class="fas fa-chevron-down" id="dropdown-arrow"></i>
+                        
+                        <!-- User Dropdown Menu -->
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-images"></i>
+                                <span>My Uploads</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="user-dropdown-item logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1102,6 +1171,10 @@
         const userActions = document.getElementById('user-actions');
         const userProfile = document.getElementById('user-profile');
         const usernameSpan = document.getElementById('username');
+        const userAvatar = document.getElementById('user-avatar');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+        const userDropdown = document.getElementById('user-dropdown');
+        const logoutBtn = document.getElementById('logout-btn');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
         const fullImageModal = document.getElementById('full-image-modal');
@@ -1135,6 +1208,7 @@
                 registerBtn.style.display = 'none';
                 userProfile.style.display = 'flex';
                 usernameSpan.textContent = currentUser.name;
+                userAvatar.src = currentUser.avatar || "https://github.com/Tohidkhan6332.png";
             } else {
                 // User is not logged in
                 loginBtn.style.display = 'block';
@@ -1520,7 +1594,8 @@
                     id: Date.now(),
                     name: 'Demo User',
                     email: emailOrPhone.includes('@') ? emailOrPhone : '',
-                    phone: emailOrPhone.includes('@') ? '' : emailOrPhone
+                    phone: emailOrPhone.includes('@') ? '' : emailOrPhone,
+                    avatar: "https://github.com/Tohidkhan6332.png"
                 };
                 users.push(user);
                 localStorage.setItem('users', JSON.stringify(users));
@@ -1621,6 +1696,41 @@
             updateUserInterface();
             loginModal.style.display = 'none';
             showToast(`Welcome to Tohid Gemini Prompte, ${name}!`);
+        });
+
+        // User dropdown functionality
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+            dropdownArrow.classList.toggle('fa-chevron-down');
+            dropdownArrow.classList.toggle('fa-chevron-up');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            userDropdown.classList.remove('active');
+            dropdownArrow.classList.remove('fa-chevron-up');
+            dropdownArrow.classList.add('fa-chevron-down');
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Clear current user
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Update UI
+            updateUserInterface();
+            
+            // Close dropdown
+            userDropdown.classList.remove('active');
+            dropdownArrow.classList.remove('fa-chevron-up');
+            dropdownArrow.classList.add('fa-chevron-down');
+            
+            // Show logout message
+            showToast('You have been logged out successfully');
         });
 
         // OTP Timer function
